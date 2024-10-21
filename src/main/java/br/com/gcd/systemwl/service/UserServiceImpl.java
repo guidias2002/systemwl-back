@@ -7,6 +7,7 @@ import br.com.gcd.systemwl.entity.UserEntity;
 import br.com.gcd.systemwl.mapper.UserMapper;
 import br.com.gcd.systemwl.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,6 +24,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private PasswordEncryptionServiceImpl passwordEncryptionServiceImpl;
+
+    @Autowired
+    private TokenService tokenService;
 
     @Override
     public void createUser(UserPostDto userPostDto) {
@@ -88,7 +92,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if(passwordEncryptionServiceImpl.getPasswordEncoder().matches(userLoginDto.getPassword(), user.getPassword())) {
-            return "Usuário logado com sucesso.";
+            return tokenService.generateToken(userLoginDto.getLogin());
         } else {
             throw new RuntimeException("Login ou senha incorretos.");
         }

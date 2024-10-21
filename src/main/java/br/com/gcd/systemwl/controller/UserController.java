@@ -48,8 +48,8 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody UserLoginDto userLoginDto) {
-        userService.loginUser(userLoginDto);
+        String token = userService.loginUser(userLoginDto);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok(token);
     }
 }
