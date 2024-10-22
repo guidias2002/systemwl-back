@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -47,9 +49,17 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestBody UserLoginDto userLoginDto) {
-        String token = userService.loginUser(userLoginDto);
+    public ResponseEntity<Map<String, Object>> loginUser(@RequestBody UserLoginDto userLoginDto) {
+        Map<String, Object> response = userService.loginUser(userLoginDto);
 
-        return ResponseEntity.ok(token);
+        return ResponseEntity.ok(response);
+    }
+
+    // verificando se ja tem usuario cadastrado com email ou login
+    @GetMapping("/check/{login}/{email}")
+    public ResponseEntity<Map<String, Boolean>> checkUser(@RequestParam String login, @RequestParam String email) {
+        Map<String, Boolean> response = userService.checkUser(login, email);
+
+        return ResponseEntity.ok(response);
     }
 }
