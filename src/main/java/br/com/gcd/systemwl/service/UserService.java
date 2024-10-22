@@ -6,6 +6,7 @@ import br.com.gcd.systemwl.dto.UserPostDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface UserService {
@@ -20,5 +21,7 @@ public interface UserService {
 
     UserDto updateUser(Long id, UserDto userDto);
 
-    String loginUser(UserLoginDto userLoginDto);
+    Map<String, Object> loginUser(UserLoginDto userLoginDto);
+
+    Map<String, Boolean> checkUser(String login, String email);
 }

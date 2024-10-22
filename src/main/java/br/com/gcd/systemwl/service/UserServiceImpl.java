@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -84,7 +86,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String loginUser(UserLoginDto userLoginDto) {
+    public Map<String, Object> loginUser(UserLoginDto userLoginDto) {
         UserEntity user = userRepository.findByLogin(userLoginDto.getLogin());
 
         if(user == null) {
@@ -92,10 +94,28 @@ public class UserServiceImpl implements UserService {
         }
 
         if(passwordEncryptionServiceImpl.getPasswordEncoder().matches(userLoginDto.getPassword(), user.getPassword())) {
-            return tokenService.generateToken(userLoginDto.getLogin());
+            String token = tokenService.generateToken(userLoginDto.getLogin());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", token);
+            response.put("login", userLoginDto.getLogin());
+
+            return response;
         } else {
             throw new RuntimeException("Login ou senha incorretos.");
         }
+    }
+
+    @Override
+    public Map<String, Boolean> checkUser(String login, String email) {
+        boolean loginExists = userRepository.existsByLogin(login);
+        boolean emailExists = userRepository.existsByEmail(email);
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("login", loginExists);
+        response.put("email", emailExists);
+
+        return response;
     }
 
 
